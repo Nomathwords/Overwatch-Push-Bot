@@ -23,4 +23,22 @@ async def on_message(message):
     if message.content.startswith('hello'):
         await message.channel.send('Hello!')
 
+    if message.content.startswith('hi'):
+        await message.channel.send('Hi!')
+
+    if message.content.startswith('hola'):
+        await message.channel.send('¿Que tal?')
+
+    if message.content.startswith("how's it hanging"):
+        await message.channel.send('Just pushing this barrier')
+
+    if message.content.startswith('sup'):
+        await message.channel.send("Yo yo yo what's up homeslice *does Fortnite's 'Fierce' emote*")
+
+    if message.content.startswith('bonjour'):
+        await message.channel.send("Comment vas-tu?")
+
+    if message.content.startswith('yo'):
+        await message.channel.send("Drop a beat homie")
+
 client.run('')
