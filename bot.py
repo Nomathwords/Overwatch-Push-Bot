@@ -15,7 +15,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
 
-    message.content = message.content.lower()
+    message.content = message.content.lower() + (" ")
 
     if message.author == client.user:
         return
@@ -38,7 +38,15 @@ async def on_message(message):
     if message.content.startswith('bonjour'):
         await message.channel.send("Comment vas-tu?")
 
-    if message.content.startswith('yo'):
-        await message.channel.send("Drop a beat homie")
+    if message.content.startswith('yo') and not message.content.startswith("you"):
+        await message.channel.send("Yo, you chillin'?")
+
+    if message.content.startswith('hewwo'):
+        await message.channel.send("haiiiii omg ^_^ hi!! hiiiiii <3 haiiiiii hii :3")
+
+    if message.content.startswith('uwu'):
+        await message.channel.send("ᵘʷᵘ oh frick ᵘʷᵘ ᵘʷᵘ \n ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ \n ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ frick sorry guys \n ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ \n ᵘʷᵘ ᵘʷᵘ sorry im dropping \n ᵘʷᵘ my uwus all over the \n ᵘʷᵘ place ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ sorry")
+
+    
 
 client.run('')
