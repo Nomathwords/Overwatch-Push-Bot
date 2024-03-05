@@ -3,8 +3,9 @@ This is my bot that I made for fun. It's super simple, but I'd like to add more 
 How to run:
 
 1. Clone the repo into your IDE or command line
-2. Run the command py -3 -m pip install -U discord.py
-3. Run py -3 example_bot.py
+2. Install Python v3.8+
+3. Run the `command py -3 -m pip install -U discord.py` to install the discord.py dependencies
+4. Run `py -3 example_bot.py` to start the code and turn the bot on
 
 Small ideas:
 1. Polls
