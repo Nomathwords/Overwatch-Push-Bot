@@ -130,4 +130,5 @@ async def poll(interaction: discord.Interaction, question: str, one: str, two: s
     for emoji in emojis[:len(my_poll) - 1]:  # React only to the number of options provided
         await my_sent_message.add_reaction(emoji)
         
+# This needs the bot's token, which only Hunter has
 client.run('')
