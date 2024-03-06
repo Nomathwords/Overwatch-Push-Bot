@@ -40,7 +40,7 @@ async def on_message(message):
     if message.content.startswith("how's it hanging"):
         await message.channel.send('Just pushing this barrier')
 
-    if message.content.startswith('sup'):
+    if message.content.startswith('sup') and not (message.content.startswith("super") or message.content.startswith("supper")):
         await message.channel.send("Yo yo yo what's up homeslice *does Fortnite's 'Fierce' emote*")
 
     if message.content.startswith('bonjour'):
