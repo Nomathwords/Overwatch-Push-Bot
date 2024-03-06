@@ -13,7 +13,7 @@ tree = app_commands.CommandTree(client)
 # Sync the tree commands
 @client.event
 async def on_ready():
-    print(f'We have logged in as {client.user}')
+    print(f'You have logged in as {client.user}')
 
     await tree.sync()
     print("Ready!")
@@ -29,7 +29,7 @@ async def on_message(message):
         return
 
     if message.content.startswith('hello') and not message.content.startswith('hello '):
-        await message.channel.send('Hello!')
+        await message.channel.send(f"Hello {message.author.global_name}!")
 
     if message.content.startswith('hi'):
         await message.channel.send('Hi!')
