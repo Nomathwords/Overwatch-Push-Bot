@@ -53,7 +53,8 @@ async def on_message(message):
         await message.channel.send("haiiiii omg ^_^ hi!! hiiiiii <3 haiiiiii hii :3")
 
     if message.content.startswith('uwu'):
-        await message.channel.send("ᵘʷᵘ oh frick ᵘʷᵘ ᵘʷᵘ \n ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ \n ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ frick sorry guys \n ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ \n ᵘʷᵘ ᵘʷᵘ sorry im dropping \n ᵘʷᵘ my uwus all over the \n ᵘʷᵘ place ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ sorry")
+        await message.channel.send("ᵘʷᵘ oh frick ᵘʷᵘ ᵘʷᵘ \n ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ \n ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ frick sorry guys \n ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ \n \
+                                   ᵘʷᵘ ᵘʷᵘ sorry im dropping \n ᵘʷᵘ my uwus all over the \n ᵘʷᵘ place ᵘʷᵘ ᵘʷᵘ ᵘʷᵘ sorry")
 
     if message.content.startswith('howdy'):
         await message.channel.send("Howdy howdy howdy")
@@ -109,12 +110,12 @@ async def poll(interaction: discord.Interaction, question: str, one: str, two: s
         if value == None:
             del my_poll[key]
 
-    # Create the poll message by looping through our values and appending them
+    # Create the poll message by looping through our values and appending them to the message variable
     for i in range (0, len(my_poll)):
         if list(my_poll.keys())[i] == "question":
             returned_message = returned_message + list(my_poll.values())[i] + "\n"
 
-        # We use [i - 1] on the emojis array to access the first one
+        # We use [i - 1] on the emojis array to access the first emoji, even though we are on the second my_poll element
         else:
             returned_message = returned_message + emojis[i - 1] + " - " + list(my_poll.values())[i] + "\n"
 
