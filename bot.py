@@ -7,7 +7,6 @@ intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 
-
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
@@ -50,7 +49,7 @@ async def on_message(message):
     if message.content.startswith('yo') and not message.content.startswith("you"):
         await message.channel.send("Yo, you chillin'?")
 
-    if message.content.startswith('hewwo'):
+    if "hewwo" in message.content:
         await message.channel.send("haiiiii omg ^_^ hi!! hiiiiii <3 haiiiiii hii :3")
 
     if message.content.startswith('uwu'):
@@ -92,13 +91,43 @@ async def add(interaction: discord.Interaction, first_value: int, second_value: 
     four = "The fourth value in the poll"
 )
 async def poll(interaction: discord.Interaction, question: str, one: str, two: str, three: Optional[str], four: Optional[str]):
-    
+
     # Get optional parmeters, if any
     three = three or None
     four = four or None
 
-    # Build array of question and poll values
-    my_poll = []
-        
+    # Build the poll in a dictionary and remove the interaction value
+    my_poll = locals()
+    del my_poll['interaction']
 
+    # Variables
+    returned_message = ""
+    emojis = ['🇦', '🇧', '🇨', '🇩']
+
+    # Remove any keys with values of None
+    for key, value in list(my_poll.items()):
+        if value == None:
+            del my_poll[key]
+
+    # Create the poll message by looping through our values and appending them
+    for i in range (0, len(my_poll)):
+        if list(my_poll.keys())[i] == "question":
+            returned_message = returned_message + list(my_poll.values())[i] + "\n"
+
+        # We use [i - 1] on the emojis array to access the first one
+        else:
+            returned_message = returned_message + emojis[i - 1] + " - " + list(my_poll.values())[i] + "\n"
+
+    returned_message.strip()
+
+    # Send the poll message
+    poll_message = await interaction.response.send_message(returned_message)
+
+    # Get the message that was just sent originally
+    my_sent_message = await interaction.original_response()
+
+    # Add reactions to the poll message
+    for emoji in emojis[:len(my_poll) - 1]:  # React only to the number of options provided
+        await my_sent_message.add_reaction(emoji)
+        
 client.run('')
