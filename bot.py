@@ -65,27 +65,30 @@ async def on_message(message):
 # Test command to make Push Bot say hello
 @tree.command(
     name = "testcommand",
-    description = "I'm testing a slash command! This will make the bot say hello!",
+    description = "I'm testing a slash command! This will make Push Bot say hello!",
 )
 async def testcommand(interaction):
     await interaction.response.send_message("Hello!")
 
 # Command to make Push Bot add numbers
-@tree.command()
+@tree.command(
+        description = "He can't do your taxes, but he can add!"
+)
 @app_commands.describe(
-    first_value='The first value you want to add something to',
-    second_value='The value you want to add to the first value',
-    third_value = 'The value you want to add to the second value'
+    first_value = "The first value you want to add something to",
+    second_value = "The value you want to add to the first value",
+    third_value = "The value you want to add to the second value"
 )
 async def add(interaction: discord.Interaction, first_value: int, second_value: int, third_value: Optional[int]):
-    """Adds two numbers together."""
     third_value = third_value or 0
     await interaction.response.send_message(f'{first_value} + {second_value} + {third_value} = {first_value + second_value + third_value}')
 
 # Command to create a poll in chat
-@tree.command()
+@tree.command(
+        description = "Poll your friends!"
+)
 @app_commands.describe(
-    question = 'The question of the poll',
+    question = "The question of the poll",
     one = "The first value in the poll",
     two = "The second value in the poll",
     three = "The third value in the poll",
