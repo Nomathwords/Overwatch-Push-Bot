@@ -1,4 +1,5 @@
 import discord
+from br_item_shop import construct_shop_photo
 from typing import Optional
 from discord import app_commands
 from discord.ext import commands
@@ -85,7 +86,7 @@ async def add(interaction: discord.Interaction, first_value: int, second_value: 
 
 # Command to create a poll in chat
 @tree.command(
-        description = "Poll your friends!"
+    description = "Poll your friends!"
 )
 @app_commands.describe(
     question = "The question of the poll",
@@ -133,6 +134,15 @@ async def poll(interaction: discord.Interaction, question: str, one: str, two: s
     # Add reactions to the poll message
     for emoji in emojis[:len(my_poll) - 1]:  # React only to the number of options provided
         await my_sent_message.add_reaction(emoji)
+
+# Command to make Push Bot retrieve the Item Shop
+@tree.command(
+    name = "shop",
+    description = "Retrieve the current Fortnite BR item shop"
+)
+async def fetch_br_shop(interaction: discord.Interaction):
+    return_statement = construct_shop_photo()
+    await interaction.response.send_message(return_statement)
         
 # This needs the bot's token, which only Hunter has
 client.run('')
