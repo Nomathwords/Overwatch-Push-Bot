@@ -141,8 +141,15 @@ async def poll(interaction: discord.Interaction, question: str, one: str, two: s
     description = "Retrieve the current Fortnite BR item shop"
 )
 async def fetch_br_shop(interaction: discord.Interaction):
+
+    # This request will take more than 3 seconds, so we need to defer it first to not get an error
+    await interaction.response.defer()
+
+    # Get the shop
     return_statement = construct_shop_photo()
-    await interaction.response.send_message(return_statement)
+
+    # Send the shop in chat
+    await interaction.followup.send(return_statement)
         
 # This needs the bot's token, which only Hunter has
 client.run('')
