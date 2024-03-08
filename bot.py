@@ -1,32 +1,32 @@
 import discord
-from br_item_shop import construct_shop_photo
+from br_item_shop import get_fortnite_shop
 from typing import Optional
 from discord import app_commands
 from discord.ext import commands
+import asyncio
 
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 
-client = discord.Client(intents=intents)
-tree = app_commands.CommandTree(client)
+bot = commands.Bot(command_prefix='/', intents = intents)
 
 # Sync the tree commands
-@client.event
+@bot.event
 async def on_ready():
-    print(f'You have logged in as {client.user}')
+    print(f'You have logged in as {bot.user}')
 
-    await tree.sync()
+    await bot.tree.sync()
     print("Ready!")
 
 # Send messages based on chat keywords
-@client.event
+@bot.event
 async def on_message(message):
 
     message.content = message.content.lower()
 
     # Ignore all messages from Push Bot
-    if message.author == client.user:
+    if message.author == bot.user:
         return
 
     if message.content.startswith('hello') and not message.content.startswith('hello '):
@@ -64,7 +64,7 @@ async def on_message(message):
         await message.channel.send("I'm a freak, just lmk...")
 
 # Test command to make Push Bot say hello
-@tree.command(
+@bot.tree.command(
     name = "testcommand",
     description = "I'm testing a slash command! This will make Push Bot say hello!",
 )
@@ -72,7 +72,7 @@ async def testcommand(interaction):
     await interaction.response.send_message("Hello!")
 
 # Command to make Push Bot add numbers
-@tree.command(
+@bot.tree.command(
         description = "He can't do your taxes, but he can add!"
 )
 @app_commands.describe(
@@ -85,7 +85,7 @@ async def add(interaction: discord.Interaction, first_value: int, second_value: 
     await interaction.response.send_message(f'{first_value} + {second_value} + {third_value} = {first_value + second_value + third_value}')
 
 # Command to create a poll in chat
-@tree.command(
+@bot.tree.command(
     description = "Poll your friends!"
 )
 @app_commands.describe(
@@ -136,8 +136,8 @@ async def poll(interaction: discord.Interaction, question: str, one: str, two: s
         await my_sent_message.add_reaction(emoji)
 
 # Command to make Push Bot retrieve the Item Shop
-@tree.command(
-    name = "shop",
+@bot.tree.command(
+    name = "itemshop",
     description = "Retrieve the current Fortnite BR item shop"
 )
 async def fetch_br_shop(interaction: discord.Interaction):
@@ -146,10 +146,10 @@ async def fetch_br_shop(interaction: discord.Interaction):
     await interaction.response.defer()
 
     # Get the shop
-    return_statement = construct_shop_photo()
+    return_statement = await get_fortnite_shop()
 
     # Send the shop in chat
     await interaction.followup.send(return_statement)
         
 # This needs the bot's token, which only Hunter has
-client.run('')
+bot.run('')

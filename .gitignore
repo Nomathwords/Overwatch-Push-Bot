@@ -175,3 +175,6 @@ pyrightconfig.json
 
 # Output file
 output.txt
+
+# Shop images folder
+shop_images
