@@ -1,11 +1,13 @@
-import urllib.request, json, requests, shutil, os, asyncio, aiohttp, aiofiles
+import urllib.request, json, requests, shutil, os, asyncio, aiohttp, aiofiles, subprocess
 from requests.auth import HTTPBasicAuth
 from pathlib import Path
+from PIL import Image
 
 # Main function to construct the shop output
 async def get_fortnite_shop():
 
-    image_path = "./shop_images"
+    image_directory_path = "./shop_images"
+    image_file_path = "/result.png"
     returned_message = "Hello"
 
     # Get the shop in JSON format
@@ -25,10 +27,18 @@ async def get_fortnite_shop():
     else:
         return "Could not retrieve the shop at this time."
     
-    await fetch_item_images(json_shop, image_path)
+    # Fetch the shop images
+    await fetch_item_images(json_shop, image_directory_path)
 
-    returned_message.strip()
-    return(returned_message)
+    # Create one large image to send back to Discord
+    await create_shop_image(image_directory_path)
+
+    # Make sure the final image exists before returning it
+    if os.path.isfile(image_directory_path + image_file_path) == True:
+        return(image_directory_path + image_file_path)
+
+    else:
+        return("Image failed to generate. Try again later.")
 
 # Function that hits the Fortnite API and gets the shop in JSON form. Requires a valid API key.
 async def get_jsonified_shop():
@@ -93,3 +103,12 @@ async def fetch_item_images(json_shop, image_path):
                             # If we get the image, save it to the shop_images folder
                             async with aiofiles.open(filename, 'wb') as f:
                                 await f.write(await response.read())
+
+# Combine the shop images into one large image
+async def create_shop_image(image_path):
+    try:
+        subprocess.run("combine_images.bat", shell = False)
+        
+    except subprocess.CalledProcessError as e:
+        print(e)
+        return e

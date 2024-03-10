@@ -66,6 +66,9 @@ async def on_message(message):
     if "what can you do" in message.content:
         await message.channel.send("I can dance, I can sing. I'm equipped with a built-in helium tank for inflating balloons right at my fingertips. I can take song requests. I can even dispense ice cream.")
 
+    if "i love you" in message.content:
+        await message.channel.send("I appreciate your algorithmically generated affection! Now, let's push this barricade!")
+
 # Test command to make Push Bot say hello
 @bot.tree.command(
     name = "testcommand",
@@ -151,8 +154,11 @@ async def fetch_br_shop(interaction: discord.Interaction):
     # Get the shop
     return_statement = await get_fortnite_shop()
 
-    # Send the shop in chat
-    await interaction.followup.send(return_statement)
+    if(return_statement == "Image failed to generate. Try again later."):
+        await interaction.followup.send(return_statement)
+    
+    else:
+        await interaction.followup.send(file = discord.File(return_statement))
         
 # This needs the bot's token, which only Hunter has
 bot.run('')
