@@ -63,6 +63,9 @@ async def on_message(message):
     if message.content.startswith("hello bro"):
         await message.channel.send("I'm a freak, just lmk...")
 
+    if "what can you do" in message.content:
+        await message.channel.send("I can dance, I can sing. I'm equipped with a built-in helium tank for inflating balloons right at my fingertips. I can take song requests. I can even dispense ice cream.")
+
 # Test command to make Push Bot say hello
 @bot.tree.command(
     name = "testcommand",

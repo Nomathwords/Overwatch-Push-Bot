@@ -5,7 +5,8 @@ from pathlib import Path
 # Main function to construct the shop output
 async def get_fortnite_shop():
 
-    returned_message = ""
+    image_path = "./shop_images"
+    returned_message = "Hello"
 
     # Get the shop in JSON format
     json_shop = await get_jsonified_shop()
@@ -24,7 +25,7 @@ async def get_fortnite_shop():
     else:
         return "Could not retrieve the shop at this time."
     
-    returned_message = await construct_shop_photo(json_shop)
+    await fetch_item_images(json_shop, image_path)
 
     returned_message.strip()
     return(returned_message)
@@ -49,11 +50,11 @@ async def get_jsonified_shop():
         return None
 
 
-async def construct_shop_photo(json_shop):
+async def fetch_item_images(json_shop, image_path):
 
-    image_path = "./shop_images"
     image_url = ""
     image = None
+    display_assets_length = 0
 
     # Create folder if it does not exist
     if not Path(image_path).is_dir():
@@ -71,10 +72,18 @@ async def construct_shop_photo(json_shop):
 
             # We need to avoid the situation where there are no photos
             if len(json_shop['shop'][i]['displayAssets']) != 0:
-                # Get the image URL
-                image_url = json_shop['shop'][i]['displayAssets'][0].get('full_background')
+
+                # Get the number of assets per unique item (Most skins will have a BR and Lego image. We want the BR or Racing image).
+                display_assets_length = len(json_shop['shop'][i]['displayAssets'])
+
+                # Loop through the assets to get the BR or Racing image link.
+                for j in range (0, display_assets_length):
+                    if((json_shop['shop'][i]['displayAssets'][j]["primaryMode"] == "BattleRoyale") or (json_shop['shop'][i]['displayAssets'][j]["primaryMode"] == "DelMar")):
+                        image_url = json_shop['shop'][i]['displayAssets'][j].get('full_background')
+                        break
 
                 if image_url:
+
                     # Create the image name
                     filename = os.path.join(image_path, f"shop_image_{i}.jpg")
 
@@ -84,5 +93,3 @@ async def construct_shop_photo(json_shop):
                             # If we get the image, save it to the shop_images folder
                             async with aiofiles.open(filename, 'wb') as f:
                                 await f.write(await response.read())
-
-    return "Hello"
