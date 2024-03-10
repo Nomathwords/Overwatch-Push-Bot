@@ -1,23 +1,33 @@
-import discord
+import discord, datetime
 from br_item_shop import get_fortnite_shop
 from typing import Optional
 from discord import app_commands
-from discord.ext import commands
-import asyncio
+from discord.ext import commands, tasks
 
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 
 bot = commands.Bot(command_prefix='/', intents = intents)
+utc = datetime.timezone.utc
+time = datetime.time(hour = 0, minute = 1, tzinfo = utc)
 
-# Sync the tree commands
-@bot.event
-async def on_ready():
-    print(f'You have logged in as {bot.user}')
+# Task to make Push Bot get the item shop and send it in the Fortnite channel
+@tasks.loop(time = time)
+async def my_task():
 
-    await bot.tree.sync()
-    print("Ready!")
+    print("Started shop fetch")
+
+    channel = bot.get_channel(1214626990548717569)
+
+    # Get the shop
+    return_statement = await get_fortnite_shop()
+
+    if(return_statement == "Image failed to generate. Try again later."):
+        await channel.send(return_statement)
+    
+    else:
+        await channel.send(file = discord.File(return_statement))
 
 # Send messages based on chat keywords
 @bot.event
@@ -159,6 +169,15 @@ async def fetch_br_shop(interaction: discord.Interaction):
     
     else:
         await interaction.followup.send(file = discord.File(return_statement))
-        
+
+# Sync the tree commands
+@bot.event
+async def on_ready():
+    print(f'You have logged in as {bot.user}')
+
+    await bot.tree.sync()
+    print("Ready!")
+    await my_task.start()
+
 # This needs the bot's token, which only Hunter has
 bot.run('')
