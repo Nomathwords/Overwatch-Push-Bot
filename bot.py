@@ -39,8 +39,8 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    if message.content.startswith('hello') and not message.content.startswith('hello '):
-        await message.channel.send(f"Hello {message.author.global_name}!")
+    if message.content.startswith('hello'):
+        await message.channel.send("Greetings!")
 
     if message.content.startswith('hi'):
         await message.channel.send('Hi!')
@@ -74,7 +74,7 @@ async def on_message(message):
         await message.channel.send("I'm a freak, just lmk...")
 
     if "what can you do" in message.content:
-        await message.channel.send("I can dance, I can sing. I'm equipped with a built-in helium tank for inflating balloons right at my fingertips. I can take song requests. I can even dispense ice cream.")
+        await message.channel.send("The TS-1 large utility robot excels at pushing, lifting and other activities.")
 
     if "i love you" in message.content:
         await message.channel.send("I appreciate your algorithmically generated affection! Now, let's push this barricade!")

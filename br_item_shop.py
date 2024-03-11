@@ -1,7 +1,6 @@
 import urllib.request, json, requests, shutil, os, asyncio, aiohttp, aiofiles, subprocess
 from requests.auth import HTTPBasicAuth
 from pathlib import Path
-from PIL import Image
 
 # Main function to construct the shop output
 async def get_fortnite_shop():
@@ -65,6 +64,9 @@ async def fetch_item_images(json_shop, image_path):
     image_url = ""
     image = None
     display_assets_length = 0
+    main_type = ["bundle", "building_prop", "outfit", "pickaxe", "backpack", "glider", "emote", "wrap", 
+                 "musictrack", "sparks_guitar", "sparks_drum", "sparks_microphone", "sparks_bass", "sparks_song"]
+    global_shop_count = 0
 
     # Create folder if it does not exist
     if not Path(image_path).is_dir():
@@ -78,31 +80,43 @@ async def fetch_item_images(json_shop, image_path):
             shutil.rmtree(os.path.join(root, d))
 
     async with aiohttp.ClientSession() as session:
-        for i in range(len(json_shop['shop'])):
+        # Store coroutines
+        coroutines = [] 
 
-            # We need to avoid the situation where there are no photos
-            if len(json_shop['shop'][i]['displayAssets']) != 0:
+        # We are going to iterate multiple times over the JSON to grab each mainType of item, one type at a time. This will create a more "sorted" final image.
+        for i in range(0, len(main_type)):
 
-                # Get the number of assets per unique item (Most skins will have a BR and Lego image. We want the BR or Racing image).
-                display_assets_length = len(json_shop['shop'][i]['displayAssets'])
 
-                # Loop through the assets to get the BR or Racing image link.
-                for j in range (0, display_assets_length):
-                    if((json_shop['shop'][i]['displayAssets'][j]["primaryMode"] == "BattleRoyale") or (json_shop['shop'][i]['displayAssets'][j]["primaryMode"] == "DelMar")):
-                        image_url = json_shop['shop'][i]['displayAssets'][j].get('full_background')
-                        break
+            for j in range(len(json_shop['shop'])):
 
-                if image_url:
+                # We need to avoid the situation where there are no photos. I also want to sort by main_type.
+                if len(json_shop['shop'][j]['displayAssets']) != 0 and json_shop['shop'][j]['mainType'] == main_type[i]:
 
-                    # Create the image name
-                    filename = os.path.join(image_path, f"shop_image_{i}.jpg")
+                    # Get the number of assets per unique item (Most skins will have a BR and Lego image. We want the BR or Racing image).
+                    display_assets_length = len(json_shop['shop'][j]['displayAssets'])
 
-                    # Fetch the image
-                    async with session.get(image_url) as response:
-                        if response.status == 200:
-                            # If we get the image, save it to the shop_images folder
-                            async with aiofiles.open(filename, 'wb') as f:
-                                await f.write(await response.read())
+                    # Loop through the assets to get the BR or Racing image link.
+                    for k in range(0, display_assets_length):
+                        if((json_shop['shop'][j]['displayAssets'][k]["primaryMode"] == "BattleRoyale") or (json_shop['shop'][j]['displayAssets'][k]["primaryMode"] == "DelMar")):
+                            image_url = json_shop['shop'][j]['displayAssets'][k].get('full_background')
+                            break
+
+                    if image_url:
+
+                         # Create the image name
+                        filename = os.path.join(image_path, f"shop_image_{str(global_shop_count).zfill(3)}.jpg")
+
+                        # Asynchronously download the image from the link
+                        async def download_image(session, image_url, filename):
+                            async with session.get(image_url) as response:
+                                if response.status == 200:
+                                    async with aiofiles.open(filename, 'wb') as f:
+                                        await f.write(await response.read())
+
+                        coroutines.append(download_image(session, image_url, filename))
+                        global_shop_count += 1
+
+        await asyncio.gather(*coroutines)  # execute all coroutines concurrently
 
 # Combine the shop images into one large image
 async def create_shop_image(image_path):
