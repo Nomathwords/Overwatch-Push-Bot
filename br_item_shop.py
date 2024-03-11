@@ -7,7 +7,7 @@ from PIL import Image
 async def get_fortnite_shop():
 
     image_directory_path = "./shop_images"
-    image_file_path = "/result.png"
+    image_file_path = "/br_shop.png"
     returned_message = "Hello"
 
     # Get the shop in JSON format
