@@ -23,9 +23,11 @@ async def my_task():
     # Get the shop
     return_statement = await get_fortnite_shop()
 
-    if(return_statement == "Image failed to generate. Try again later."):
+    # Handle any error return statements I send
+    if(return_statement == "Could not retrieve the shop at this time.") or (return_statement == "Image failed to generate. Try again later."):
         await channel.send(return_statement)
     
+    # If we don't have errors, send the image
     else:
         await channel.send(file = discord.File(return_statement))
 
@@ -78,14 +80,6 @@ async def on_message(message):
 
     if "i love you" in message.content:
         await message.channel.send("I appreciate your algorithmically generated affection! Now, let's push this barricade!")
-
-# Test command to make Push Bot say hello
-@bot.tree.command(
-    name = "testcommand",
-    description = "I'm testing a slash command! This will make Push Bot say hello!",
-)
-async def testcommand(interaction):
-    await interaction.response.send_message("Hello!")
 
 # Command to make Push Bot add numbers
 @bot.tree.command(
