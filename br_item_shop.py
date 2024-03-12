@@ -7,7 +7,6 @@ async def get_fortnite_shop():
 
     image_directory_path = "./shop_images"
     image_file_path = "/br_shop.png"
-    returned_message = "Hello"
 
     # Get the shop in JSON format
     json_shop = await get_jsonified_shop()
@@ -18,10 +17,12 @@ async def get_fortnite_shop():
     
     # Check if the request was successful
     if json_shop != None:
+
         # Open the file and write the JSON content
-        filename = 'output.txt'
+        '''filename = 'output.txt'
         with open(filename, 'w') as outfile:
-            outfile.write(json.dumps(json_shop))
+            outfile.write(json.dumps(json_shop))'''
+
         print("Items retrieved")
     else:
         return "Could not retrieve the shop at this time."
