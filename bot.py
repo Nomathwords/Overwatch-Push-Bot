@@ -1,4 +1,4 @@
-import discord, datetime
+import discord, asyncio, datetime, configparser
 from br_item_shop import get_fortnite_shop
 from typing import Optional
 from discord import app_commands
@@ -14,7 +14,7 @@ time = datetime.time(hour = 0, minute = 1, tzinfo = utc)
 
 # Task to make Push Bot get the item shop and send it in the Fortnite channel
 @tasks.loop(time = time)
-async def my_task():
+async def task_fetch_fortnite_shop():
 
     print("Started shop fetch")
 
@@ -150,7 +150,7 @@ async def poll(interaction: discord.Interaction, question: str, one: str, two: s
     name = "itemshop",
     description = "Retrieve the current Fortnite BR item shop"
 )
-async def fetch_br_shop(interaction: discord.Interaction):
+async def request_fetch_br_shop(interaction: discord.Interaction):
 
     # This request will take more than 3 seconds, so we need to defer it first to not get an error
     await interaction.response.defer()
@@ -158,7 +158,7 @@ async def fetch_br_shop(interaction: discord.Interaction):
     # Get the shop
     return_statement = await get_fortnite_shop()
 
-    if(return_statement == "Image failed to generate. Try again later."):
+    if(return_statement == "Could not retrieve the shop at this time.") or (return_statement == "Image failed to generate. Try again later."):
         await interaction.followup.send(return_statement)
     
     else:
@@ -170,8 +170,12 @@ async def on_ready():
     print(f'You have logged in as {bot.user}')
 
     await bot.tree.sync()
+
     print("Ready!")
-    await my_task.start()
+
+    await asyncio.gather(
+        task_fetch_fortnite_shop.start(),
+    )
 
 # This needs the bot's token, which only Hunter has
 bot.run('')
