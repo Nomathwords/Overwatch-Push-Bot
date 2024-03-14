@@ -19,9 +19,9 @@ async def get_fortnite_shop():
     if json_shop != None:
 
         # Open the file and write the JSON content
-        '''filename = 'output.txt'
+        filename = 'output.txt'
         with open(filename, 'w') as outfile:
-            outfile.write(json.dumps(json_shop))'''
+            outfile.write(json.dumps(json_shop))
 
         print("Items retrieved")
     else:
@@ -66,7 +66,8 @@ async def fetch_item_images(json_shop, image_path):
     image = None
     display_assets_length = 0
     main_type = ["bundle", "building_prop", "outfit", "pickaxe", "backpack", "glider", "emote", "wrap", 
-                 "musictrack", "sparks_guitar", "sparks_drum", "sparks_microphone", "sparks_bass", "sparks_song"]
+                 "sparks_guitar", "sparks_drum", "sparks_microphone", "sparks_bass", "sparks_song"]
+
     global_shop_count = 0
 
     # Create folder if it does not exist
@@ -86,19 +87,18 @@ async def fetch_item_images(json_shop, image_path):
 
         # We are going to iterate multiple times over the JSON to grab each mainType of item, one type at a time. This will create a more "sorted" final image.
         for i in range(0, len(main_type)):
-
-
             for j in range(len(json_shop['shop'])):
 
                 # We need to avoid the situation where there are no photos. I also want to sort by main_type.
-                if len(json_shop['shop'][j]['displayAssets']) != 0 and json_shop['shop'][j]['mainType'] == main_type[i]:
+                if (len(json_shop['shop'][j]['displayAssets']) != 0 and json_shop['shop'][j]['mainType'] == main_type[i]):
 
                     # Get the number of assets per unique item (Most skins will have a BR and Lego image. We want the BR or Racing image).
                     display_assets_length = len(json_shop['shop'][j]['displayAssets'])
 
-                    # Loop through the assets to get the BR or Racing image link.
+                    # Loop through the assets to get the BR, Festival, or Racing image link. We avoid the Lego image, however.
                     for k in range(0, display_assets_length):
-                        if((json_shop['shop'][j]['displayAssets'][k]["primaryMode"] == "BattleRoyale") or (json_shop['shop'][j]['displayAssets'][k]["primaryMode"] == "DelMar")):
+                        if(json_shop['shop'][j]['displayAssets'][k]["primaryMode"] != "Juno"):
+                            
                             image_url = json_shop['shop'][j]['displayAssets'][k].get('full_background')
                             break
 
