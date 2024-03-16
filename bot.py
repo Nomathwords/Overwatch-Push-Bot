@@ -73,7 +73,7 @@ async def on_message(message):
         await message.channel.send("Howdy howdy howdy")
 
     if message.content.startswith("hello bro"):
-        await message.channel.send("I'm a freak, just lmk...")
+        await message.channel.send("𝒾𝓂 𝒶 𝒻𝓇ℯ𝒶𝓀, 𝒿𝓊𝓈𝓉 𝓁𝓂𝓀")
 
     if "what can you do" in message.content:
         await message.channel.send("The TS-1 large utility robot excels at pushing, lifting and other activities.")

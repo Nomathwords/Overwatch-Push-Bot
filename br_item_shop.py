@@ -10,6 +10,7 @@ async def get_fortnite_shop():
 
     # Get the shop in JSON format
     json_shop = await get_jsonified_shop()
+    print("JSON shop retrieved")
 
     # If we get nothing, gracefully return with an error message
     if(json_shop == None):
@@ -29,9 +30,11 @@ async def get_fortnite_shop():
     
     # Fetch the shop images
     await fetch_item_images(json_shop, image_directory_path)
+    print("Fetched shop images")
 
     # Create one large image to send back to Discord
     await create_shop_image(image_directory_path)
+    print("Created final shop image")
 
     # Make sure the final image exists before returning it
     if os.path.isfile(image_directory_path + image_file_path) == True:
