@@ -3,6 +3,7 @@ from br_item_shop import get_fortnite_shop
 from typing import Optional
 from discord import app_commands
 from discord.ext import commands, tasks
+from secrets import randbelow
 
 intents = discord.Intents.default()
 intents.messages = True
@@ -81,9 +82,12 @@ async def on_message(message):
     if "i love you" in message.content:
         await message.channel.send("I appreciate your algorithmically generated affection! Now, let's push this barricade!")
 
+    if "ramattra" in message.content:
+        await message.channel.send("You will suffer as I, Ramattra, have suffered! Your torment will outlast the stars! When the universe dwindles into dust, there you will be, still suffering as I have... suffered")
+
 # Command to make Push Bot add numbers
 @bot.tree.command(
-        description = "He can't do your taxes, but he can add!"
+    description = "He can't do your taxes, but he can add!"
 )
 @app_commands.describe(
     first_value = "The first value you want to add something to",
@@ -93,6 +97,37 @@ async def on_message(message):
 async def add(interaction: discord.Interaction, first_value: int, second_value: int, third_value: Optional[int]):
     third_value = third_value or 0
     await interaction.response.send_message(f'{first_value} + {second_value} + {third_value} = {first_value + second_value + third_value}')
+
+# Command to make Push Bot flip a coin
+@bot.tree.command(
+    description = "Flip a coin!"
+)
+async def coinflip(interaction: discord.Interaction):
+
+    coin_side = randbelow(2)
+    await interaction.response.send_message("It's heads!") if coin_side == 0 else await interaction.response.send_message("It's tails!")
+
+# Command to make Push Bot roll a die
+@bot.tree.command(
+    description = "Roll a die!"
+)
+async def dieroll(interaction: discord.Interaction):
+
+    die_side = randbelow(6)
+    
+    match die_side:
+        case 0:
+            await interaction.response.send_message("You rolled a 1!")
+        case 1:
+            await interaction.response.send_message("You rolled a 2!")
+        case 2:
+            await interaction.response.send_message("You rolled a 3!")
+        case 3:
+            await interaction.response.send_message("You rolled a 4!")
+        case 4:
+            await interaction.response.send_message("You rolled a 5!")
+        case 5:
+            await interaction.response.send_message("You rolled a 6!")
 
 # Command to create a poll in chat
 @bot.tree.command(
