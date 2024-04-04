@@ -11,7 +11,7 @@ How to run:
 
 Small ideas:
 1. ~~Polls~~ Done!
-2. Small games (Dice, Coin Flip)
+2. ~~Small games (Dice, Coin Flip)~~ Done!
 
 Large ideas:
 1. ~~Fetch the Fortnite item shop every night~~ Done!
