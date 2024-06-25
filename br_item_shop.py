@@ -65,13 +65,12 @@ async def get_jsonified_shop():
 
 async def fetch_item_images(json_shop, image_path):
 
-    image_url = ""
+    image_url = None
     image = None
     display_assets_length = 0
-    main_type = ["bundle", "building_prop", "outfit", "pickaxe", "backpack", "glider", "emote", "wrap", 
-                 "sparks_guitar", "sparks_drum", "sparks_microphone", "sparks_bass", "sparks_song"]
-
     global_shop_count = 0
+    main_type = ["bundle", "building_prop", "outfit", "pickaxe", "backpack", "glider", "emote", "wrap", 
+                 "sparks_guitar", "sparks_drum", "sparks_microphone", "sparks_bass"]
 
     # Create folder if it does not exist
     if not Path(image_path).is_dir():
@@ -88,24 +87,24 @@ async def fetch_item_images(json_shop, image_path):
         # Store coroutines
         coroutines = [] 
 
-        # We are going to iterate multiple times over the JSON to grab each mainType of item, one type at a time. This will create a more "sorted" final image.
+        # We are going to iterate multiple times over the JSON to grab each main_type of item, one type at a time. This will create a more "sorted" final image.
         for i in range(0, len(main_type)):
-            for j in range(len(json_shop['shop'])):
+            for j in range(0, len(json_shop["shop"])):
 
                 # We need to avoid the situation where there are no photos. I also want to sort by main_type.
-                if (len(json_shop['shop'][j]['displayAssets']) != 0 and json_shop['shop'][j]['mainType'] == main_type[i]):
+                if (len(json_shop["shop"][j]["displayAssets"]) != 0 and json_shop["shop"][j]["mainType"] == main_type[i]):
 
-                    # Get the number of assets per unique item (Most skins will have a BR and Lego image. We want the BR or Racing image).
-                    display_assets_length = len(json_shop['shop'][j]['displayAssets'])
+                    # Get the number of assets per unique item (Most skins will have a BR and Lego image, a Festival image, or a Racing image. We want the BR, Festival, and Racing images).
+                    display_assets_length = len(json_shop["shop"][j]["displayAssets"])
 
-                    # Loop through the assets to get the BR, Festival, or Racing image link. We avoid the Lego image, however.
+                    # Loop through the assets to get the BR, Festival, or Racing image link. We want to avoid the Lego image, however.
                     for k in range(0, display_assets_length):
-                        if(json_shop['shop'][j]['displayAssets'][k]["primaryMode"] != "Juno"):
+                        if(json_shop["shop"][j]["displayAssets"][k]["primaryMode"] != "Juno"):
                             
-                            image_url = json_shop['shop'][j]['displayAssets'][k].get('full_background')
+                            image_url = json_shop["shop"][j]["displayAssets"][k].get("full_background")
                             break
 
-                    if image_url:
+                    if image_url != None:
 
                          # Create the image name
                         filename = os.path.join(image_path, f"shop_image_{str(global_shop_count).zfill(3)}.jpg")
@@ -114,13 +113,14 @@ async def fetch_item_images(json_shop, image_path):
                         async def download_image(session, image_url, filename):
                             async with session.get(image_url) as response:
                                 if response.status == 200:
-                                    async with aiofiles.open(filename, 'wb') as f:
+                                    async with aiofiles.open(filename, "wb") as f:
                                         await f.write(await response.read())
 
                         coroutines.append(download_image(session, image_url, filename))
                         global_shop_count += 1
+                        image_url = None
 
-        await asyncio.gather(*coroutines)  # execute all coroutines concurrently
+        await asyncio.gather(*coroutines)  # Execute all coroutines concurrently
 
 # Combine the shop images into one large image
 async def create_shop_image(image_path):
